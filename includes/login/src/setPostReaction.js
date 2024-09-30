@@ -4,7 +4,7 @@
  * changed Buffer => Buffer.from()
  * modified it since it was outdated
  * Do not remove the author's name to get notified to the latest updates.
-*/
+ */
 
 "use strict";
 
@@ -12,12 +12,19 @@ const utils = require("../utils");
 const log = require("npmlog");
 
 function formatData(resData) {
-	return {
-		viewer_feedback_reaction_info: resData.feedback_react.feedback.viewer_feedback_reaction_info,
-		supported_reactions: resData.feedback_react.feedback.supported_reactions,
-		top_reactions: resData.feedback_react.feedback.top_reactions.edges,
-		reaction_count: resData.feedback_react.feedback.reaction_count
-	};
+	// Checking if feedback_react and feedback exist
+	if (resData && resData.feedback_react && resData.feedback_react.feedback) {
+		return {
+			viewer_feedback_reaction_info: resData.feedback_react.feedback.viewer_feedback_reaction_info,
+			supported_reactions: resData.feedback_react.feedback.supported_reactions,
+			top_reactions: resData.feedback_react.feedback.top_reactions.edges,
+			reaction_count: resData.feedback_react.feedback.reaction_count
+		};
+	} else {
+		// Error handling in case feedback_react is missing
+		log.error("formatData", "feedback_react ya feedback undefined hai");
+		return {};  // Returning an empty object or a default value
+	}
 }
 
 module.exports = function (defaultFuncs, api, ctx) {
